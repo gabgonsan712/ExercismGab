@@ -22,7 +22,7 @@ export function translate2d(dx, dy) {
     return result;
   }
   return moveCoordinatesRight2Px;
-}
+} 
 
 /**
  * Create a function that returns a function making use of a closure to
@@ -55,15 +55,17 @@ export function scale2d(sx, sy) {
  *  transformed coordinate pair in the form [x, y]
  */
 export function composeTransform(f, g) {
-  function composedTransformations() {
-    const moveCoordinatesRight2Px = translate2d(2, 0);
-    const doubleCoordinates = scale2d(2, 2);
-    let result;
-    result = moveCoordinatesRight2Px(f,g);
-    result = doubleCoordinates(f,g);
-    return result;
+
+  function composedTransforms (x, y){
+    let stepOne = f(x, y);
+    x = stepOne[0];
+    y = stepOne[1];
+    let stepTwo = g(x, y);
+    return stepTwo;
+
   }
-  return composedTransformations;
+  return composedTransforms;
+
 }
 
 /**
@@ -75,6 +77,40 @@ export function composeTransform(f, g) {
  * @returns {function} a function which takes x and y arguments, and will either return the saved result
  *  if the arguments are the same on subsequent calls, or compute a new result if they are different.
  */
+
+
+
 export function memoizeTransform(f) {
-  throw new Error('Implement the memoizeTransform function');
+  let actualFunction;
+  let pastFunction;
+  let savedMemorie;
+
+  let memoized;
+
+  let actX;
+
+  actualFunction = f;
+
+  function memoizedFunction(x,y){ 
+    console.log('memoizedFunction');
+
+    if (actX != x ) {
+      memoized = f(x,y);
+      savedMemorie = memoized;
+      pastFunction = f;
+      actX = x;
+      return memoized;
+    }
+    else {
+      return savedMemorie;
+    }
+
+  }
+
+  if (actualFunction != pastFunction) {
+    return memoizedFunction;
+  }
+
+
+
 }
